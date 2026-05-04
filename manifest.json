@@ -1,0 +1,12 @@
+{
+  "display_name": "DeepSeek Cache Optimizer",
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Your Name",
+  "version": "1.0.0",
+  "loading_order": 999,
+  "hooks": {
+    "activate": "onActivate",
+    "deactivate": "onDeactivate"
+  }
+}
