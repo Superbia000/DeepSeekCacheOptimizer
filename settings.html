@@ -1,0 +1,159 @@
+<div class="deepseek-cache-optimizer-settings">
+    <h3>DeepSeek Cache Optimizer</h3>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_enabled">
+            <strong>Enable Extension</strong>
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_debug">
+            Debug Mode (detailed console logs)
+        </label>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_adaptive_sorting">
+            Adaptive Sorting Engine
+        </label>
+        <span class="hint">Compare with last sent messages and reorder for maximum cache prefix.</span>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_worldinfo_optimization">
+            World Info Optimization
+        </label>
+        <span class="hint">Strip dynamic parts (like probability) from world entries to separate system messages.</span>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_cross_session_eval">
+            Cross-Session Cache Reuse Evaluation
+        </label>
+        <span class="hint">Log similarity of system prompts between different chats.</span>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="dco_deepseek_only">
+            Apply to DeepSeek API only
+        </label>
+        <span class="hint">Skip optimization if current API is not DeepSeek.</span>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="form-group">
+        <label style="width:100%;">Dynamic Patterns (regex, one per line)</label>
+        <textarea id="dco_patterns" rows="5" spellcheck="false"
+                  placeholder="e.g. \\(概率[^)]*\\)"></textarea>
+        <span class="hint">Patterns to identify dynamic parts in world info entries. Lines starting with # are ignored.</span>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="form-group">
+        <strong>Cache Statistics</strong>
+    </div>
+    <div class="stats-block" id="dco_stats">
+        <div class="stats-item"><span class="stats-label">Last Optimization:</span><span id="dco_last_cache_percent">N/A</span></div>
+        <div class="stats-item"><span class="stats-label">Best Cross-Session Similarity:</span><span id="dco_cross_similarity">N/A</span></div>
+        <div class="stats-item"><span class="stats-label">Cross-Session Chat ID:</span><span id="dco_cross_chatid">—</span></div>
+    </div>
+</div>
+
+<script>
+// 初始化设置 UI 并绑定事件
+$(document).ready(function() {
+    const extensionName = 'DeepSeekCacheOptimizer';
+    const context = SillyTavern.getContext();
+    const settings = context.extensionSettings[extensionName] || {};
+    
+    // 默认值回填
+    function getSetting(key, defaultVal) {
+        return settings[key] !== undefined ? settings[key] : defaultVal;
+    }
+    
+    // 保存设置
+    function saveSettings() {
+        context.saveSettingsDebounced();
+        updateStatsDisplay();
+    }
+    
+    // 读取 UI 值到 settings
+    function syncFromUI() {
+        settings.enabled = $('#dco_enabled').prop('checked');
+        settings.debug_enabled = $('#dco_debug').prop('checked');
+        settings.adaptive_sorting = $('#dco_adaptive_sorting').prop('checked');
+        settings.worldinfo_optimization = $('#dco_worldinfo_optimization').prop('checked');
+        settings.cross_session_eval = $('#dco_cross_session_eval').prop('checked');
+        settings.deepseek_only = $('#dco_deepseek_only').prop('checked');
+        
+        const patternsText = $('#dco_patterns').val();
+        settings.dynamic_patterns = patternsText
+            .split('\n')
+            .map(p => p.trim())
+            .filter(p => p && !p.startsWith('#'));
+    }
+    
+    // 从 settings 更新 UI
+    function syncToUI() {
+        $('#dco_enabled').prop('checked', getSetting('enabled', true));
+        $('#dco_debug').prop('checked', getSetting('debug_enabled', true));
+        $('#dco_adaptive_sorting').prop('checked', getSetting('adaptive_sorting', true));
+        $('#dco_worldinfo_optimization').prop('checked', getSetting('worldinfo_optimization', true));
+        $('#dco_cross_session_eval').prop('checked', getSetting('cross_session_eval', true));
+        $('#dco_deepseek_only').prop('checked', getSetting('deepseek_only', true));
+        
+        const patterns = getSetting('dynamic_patterns', []);
+        $('#dco_patterns').val(patterns.join('\n'));
+    }
+    
+    // 更新下方统计数值
+    function updateStatsDisplay() {
+        const lastSent = settings.last_sent_messages;
+        if (lastSent && Array.isArray(lastSent)) {
+            // 这里只是粗略估计，真实命中率需由 index.js 记录
+            const systemCount = lastSent.filter(m => m.role === 'system').length;
+            const total = lastSent.length;
+            const cacheablePercent = total > 0 ? Math.round((systemCount / total) * 100) : 0;
+            $('#dco_last_cache_percent').text(`${cacheablePercent}% estimated prefix`);
+        } else {
+            $('#dco_last_cache_percent').text('No data yet');
+        }
+        
+        // 跨会话相似度
+        const profiles = settings.session_profiles || {};
+        let bestSim = 0;
+        let bestId = '—';
+        // 简单遍历找最高值（由 index.js 保存的相似度信息未持久化，这里仅显示无）
+        // 实际 index.js 未将相似度计算结果写入 settings，可后期改善
+        $('#dco_cross_similarity').text('Check console');
+        $('#dco_cross_chatid').text('See logs');
+    }
+    
+    // 绑定事件
+    $('#dco_enabled, #dco_debug, #dco_adaptive_sorting, #dco_worldinfo_optimization, #dco_cross_session_eval, #dco_deepseek_only')
+        .on('change', function() {
+            syncFromUI();
+            saveSettings();
+        });
+        
+    $('#dco_patterns').on('input', function() {
+        syncFromUI();
+        saveSettings();
+    });
+    
+    // 初始加载
+    syncToUI();
+    updateStatsDisplay();
+});
+</script>
