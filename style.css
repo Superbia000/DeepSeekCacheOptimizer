@@ -1,0 +1,94 @@
+/* DeepSeek Cache Optimizer - 简洁无特效样式 */
+
+.deepseek-cache-optimizer-settings {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--SmartThemeBodyColor, #ccc);
+    padding: 8px 0;
+}
+
+.deepseek-cache-optimizer-settings h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--SmartThemeBorderColor, #333);
+    padding-bottom: 6px;
+}
+
+.deepseek-cache-optimizer-settings .form-group {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.deepseek-cache-optimizer-settings .form-group label {
+    white-space: nowrap;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.deepseek-cache-optimizer-settings textarea {
+    width: 100%;
+    background: var(--SmartThemeInputBG, #1a1a1a);
+    color: var(--SmartThemeInputColor, #ddd);
+    border: 1px solid var(--SmartThemeBorderColor, #333);
+    border-radius: 4px;
+    padding: 6px;
+    font-family: monospace;
+    resize: vertical;
+    font-size: 13px;
+}
+
+.deepseek-cache-optimizer-settings .hint {
+    font-size: 12px;
+    opacity: 0.8;
+    width: 100%;
+}
+
+.deepseek-cache-optimizer-settings button {
+    background: var(--SmartThemeButtonBG, #2a2a2a);
+    color: var(--SmartThemeButtonColor, #ccc);
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    border-radius: 4px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.deepseek-cache-optimizer-settings button:hover {
+    background: var(--SmartThemeButtonBGHover, #3a3a3a);
+}
+
+.deepseek-cache-optimizer-settings .inline-flex {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.deepseek-cache-optimizer-settings .separator {
+    margin: 16px 0;
+    border-top: 1px solid var(--SmartThemeBorderColor, #333);
+}
+
+.deepseek-cache-optimizer-settings .stats-block {
+    background: var(--SmartThemeInputBG, #1a1a1a);
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--SmartThemeBorderColor, #333);
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.deepseek-cache-optimizer-settings .stats-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.deepseek-cache-optimizer-settings .stats-label {
+    opacity: 0.8;
+}
